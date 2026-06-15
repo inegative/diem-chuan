@@ -4,165 +4,552 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Điểm chuẩn đại học</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.9.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.x/dist/tabler-icons.min.css">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f5f7;color:#1a1a2e;font-size:14px}
-.app{max-width:1140px;margin:0 auto;padding:1.5rem 1rem}
-
-/* Header */
-.header{margin-bottom:1.25rem}
-.header h1{font-size:20px;font-weight:600;color:#1a1a2e;display:flex;align-items:center;gap:8px;margin-bottom:3px}
-.header h1 i{color:#3b5bdb;font-size:22px}
-.header p{font-size:13px;color:#6b7280}
-
-/* Loading */
-#loadingState{text-align:center;padding:4rem 1rem;color:#6b7280}
-#loadingState i{font-size:40px;display:block;margin-bottom:.75rem;color:#3b5bdb;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* Stats */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem}
-.stat{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:.85rem 1rem}
-.stat-val{font-size:24px;font-weight:600;color:#1a1a2e}
-.stat-lbl{font-size:12px;color:#6b7280;margin-top:2px}
-
-/* Filters */
-.filters{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.75rem}
-.filter-group label{font-size:12px;color:#6b7280;display:block;margin-bottom:4px;font-weight:500}
-.filter-group select,.filter-group input{
-  width:100%;font-size:13px;padding:7px 10px;
-  border:1px solid #d1d5db;border-radius:7px;
-  background:#f9fafb;color:#1a1a2e;outline:none;
-  transition:border-color .15s,box-shadow .15s
-}
-.filter-group select:focus,.filter-group input:focus{
-  border-color:#3b5bdb;box-shadow:0 0 0 3px rgba(59,91,219,.1);background:#fff
+:root {
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --surface2: #F2F4F7;
+  --border: #E4E7EC;
+  --border2: #CDD2DA;
+  --text: #101828;
+  --text2: #475467;
+  --text3: #98A2B3;
+  --accent: #1D4ED8;
+  --accent-bg: #EFF4FF;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 3px rgba(16,24,40,.06), 0 1px 2px rgba(16,24,40,.04);
+  --shadow-md: 0 4px 8px -2px rgba(16,24,40,.08), 0 2px 4px -2px rgba(16,24,40,.06);
 }
 
-/* Toolbar */
-.toolbar{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;flex-wrap:wrap}
-.toolbar-left{flex:1}
-.toolbar-left span{font-size:13px;color:#6b7280}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;font-size:13px;
-  border:1px solid #d1d5db;border-radius:7px;background:#fff;color:#374151;
-  cursor:pointer;transition:background .12s,border-color .12s;font-weight:500}
-.btn:hover{background:#f3f4f6;border-color:#9ca3af}
-.btn i{font-size:15px}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Table */
-.table-wrap{background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:auto;max-height:560px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead{position:sticky;top:0;z-index:2}
-thead th{
-  background:#f8fafc;padding:10px 12px;text-align:left;
-  font-weight:600;font-size:12px;color:#6b7280;
-  border-bottom:1px solid #e5e7eb;border-right:1px solid #f1f3f5;
-  white-space:nowrap;cursor:pointer;user-select:none
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
 }
-thead th:last-child{border-right:none}
-thead th:hover{color:#1a1a2e;background:#f1f3f9}
-thead th .si{margin-left:3px;opacity:.35;font-size:10px}
-thead th.active{color:#3b5bdb;background:#eef2ff}
-thead th.active .si{opacity:1}
-tbody tr{border-bottom:1px solid #f1f3f5;transition:background .08s}
-tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:#f8fafc}
-tbody td{padding:9px 12px;color:#374151;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-right:1px solid #f1f3f5}
-tbody td:last-child{border-right:none}
 
-/* Score colors */
-.score{font-weight:600;text-align:center;font-size:13px}
-.score.high{color:#0d7a5f}
-.score.mid{color:#92400e}
-.score.low{color:#991b1b}
-.score.na{color:#9ca3af;font-weight:400;font-size:12px}
+/* ── LAYOUT ── */
+.app { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
 
-/* Badges */
-.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap;border:1px solid transparent}
-.b-a00{background:#dbeafe;color:#1e40af;border-color:#bfdbfe}
-.b-c01{background:#dcfce7;color:#166534;border-color:#bbf7d0}
-.b-d01{background:#ede9fe;color:#5b21b6;border-color:#ddd6fe}
-.b-d07{background:#fef3c7;color:#92400e;border-color:#fde68a}
-.b-x{background:#f3f4f6;color:#6b7280;border-color:#e5e7eb}
+/* ── HEADER ── */
+.header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.header h1 { font-size: 18px; font-weight: 600; color: var(--text); }
+.header p  { font-size: 13px; color: var(--text2); margin-top: 2px; }
 
-/* Pagination */
-.pagination{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:1rem;flex-wrap:wrap}
-.pg-btn{padding:5px 11px;font-size:13px;border:1px solid #d1d5db;border-radius:6px;
-  background:#fff;color:#374151;cursor:pointer;transition:background .1s;font-weight:500}
-.pg-btn:hover:not(:disabled){background:#f3f4f6}
-.pg-btn:disabled{opacity:.35;cursor:not-allowed}
-.pg-btn.active{background:#3b5bdb;color:#fff;border-color:#3b5bdb}
-.pg-info{font-size:12px;color:#9ca3af;padding:0 4px}
 
-.empty{text-align:center;padding:3rem;color:#9ca3af;font-size:14px}
-.empty i{font-size:40px;display:block;margin-bottom:.75rem;opacity:.3}
 
-/* Error */
-#errorState{display:none;text-align:center;padding:3rem;color:#991b1b;background:#fff;border:1px solid #fecaca;border-radius:10px}
-#errorState i{font-size:40px;display:block;margin-bottom:.75rem}
+/* ── STATS ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 1.25rem;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .875rem 1.125rem;
+  box-shadow: var(--shadow);
+}
+.stat-val { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -.5px; }
+.stat-lbl { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.stat-icon { font-size: 20px; color: var(--text3); margin-bottom: 6px; }
+
+/* ── FILTERS PANEL ── */
+.filters-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+  overflow: visible;
+}
+.filters-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: .875rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.filters-header i { color: var(--text2); font-size: 16px; }
+.filters-header span { font-size: 13px; font-weight: 600; color: var(--text); }
+.filters-header .filter-count {
+  margin-left: auto;
+  font-size: 11px; background: var(--accent); color: #fff;
+  border-radius: 12px; padding: 1px 7px; display: none;
+}
+
+.filters-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.filter-group { position: relative; }
+.filter-group > label {
+  font-size: 11px; font-weight: 600; color: var(--text2);
+  text-transform: uppercase; letter-spacing: .4px;
+  display: block; margin-bottom: 6px;
+}
+
+/* standard input */
+.filter-input {
+  width: 100%; padding: 7px 10px 7px 32px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.filter-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(29,78,216,.1);
+  background: var(--surface);
+}
+.filter-input-icon {
+  position: absolute; left: 8px; top: 50%; transform: translateY(calc(50% + 2px));
+  color: var(--text3); font-size: 14px; pointer-events: none;
+}
+
+/* ── MULTI-SELECT DROPDOWN ── */
+.ms-wrapper { position: relative; }
+.ms-trigger {
+  width: 100%; padding: 0 30px 0 8px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .15s, box-shadow .15s;
+  display: flex; align-items: center; gap: 5px;
+  height: 34px;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.ms-trigger:hover, .ms-trigger.open {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+.ms-trigger.open { box-shadow: 0 0 0 3px rgba(29,78,216,.1); }
+.ms-trigger .chevron {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-size: 14px; color: var(--text3); transition: transform .15s;
+  pointer-events: none;
+}
+.ms-trigger.open .chevron { transform: translateY(-50%) rotate(180deg); }
+
+.ms-tag {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--accent-bg); color: var(--accent);
+  font-size: 11px; font-weight: 600;
+  padding: 1px 6px; border-radius: 4px; white-space: nowrap;
+  max-width: 120px; overflow: hidden; text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+.ms-count-badge {
+  display: inline-flex; align-items: center;
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 1px 7px; border-radius: 10px; white-space: nowrap;
+  flex-shrink: 0;
+}
+.ms-tag .rm {
+  cursor: pointer; font-size: 13px; line-height: 1;
+  opacity: .7; margin-left: 1px;
+}
+.ms-tag .rm:hover { opacity: 1; }
+.ms-placeholder { color: var(--text3); font-size: 13px; }
+
+.ms-dropdown {
+  display: none;
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  max-height: 280px;
+  overflow: hidden;
+  flex-direction: column;
+}
+.ms-dropdown.open { display: flex; }
+
+.ms-search {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ms-search input {
+  width: 100%; border: none; outline: none;
+  font-size: 13px; color: var(--text);
+  background: transparent;
+}
+.ms-search input::placeholder { color: var(--text3); }
+
+.ms-options {
+  overflow-y: auto;
+  flex: 1;
+}
+.ms-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; cursor: pointer;
+  font-size: 13px; color: var(--text);
+  transition: background .1s;
+}
+.ms-option:hover { background: var(--surface2); }
+.ms-option.selected { background: var(--accent-bg); }
+.ms-option input[type=checkbox] {
+  width: 14px; height: 14px; accent-color: var(--accent); flex-shrink: 0;
+}
+.ms-option-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ms-footer {
+  padding: 6px 10px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px;
+  flex-shrink: 0;
+}
+.ms-footer button {
+  flex: 1; font-size: 12px; padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px; background: var(--surface2);
+  color: var(--text2); cursor: pointer;
+}
+.ms-footer button:hover { background: var(--border); }
+.ms-footer .btn-all {
+  background: var(--accent-bg); color: var(--accent); border-color: transparent;
+}
+.ms-footer .btn-all:hover { background: #dbeafe; }
+.ms-footer .btn-view-sel {
+  background: var(--accent-bg); color: var(--accent); border-color: transparent;
+  font-weight: 600;
+}
+.ms-footer .btn-view-sel:hover { background: #dbeafe; }
+
+/* ── TOOLBAR ── */
+.toolbar {
+  display: flex; align-items: center; gap: .75rem;
+  margin-bottom: .75rem; flex-wrap: wrap;
+}
+.toolbar-left { flex: 1; min-width: 160px; }
+.result-count { font-size: 13px; color: var(--text2); }
+.result-count strong { color: var(--text); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background .12s, border-color .12s;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+}
+.btn:hover { background: var(--surface2); border-color: var(--border2); }
+.btn i { font-size: 15px; color: var(--text2); }
+.btn-primary {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
+.btn-primary i { color: rgba(255,255,255,.8); }
+.btn-primary:hover { background: #1e40af; border-color: #1e40af; }
+
+/* ── TABLE ── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: auto;
+  max-height: 560px;
+  box-shadow: var(--shadow);
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+thead { position: sticky; top: 0; z-index: 2; }
+thead th {
+  background: var(--surface2);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+thead th:last-child { border-right: none; }
+thead th:hover { color: var(--text); background: #EAECF0; }
+thead th .sort-ico { margin-left: 4px; opacity: .3; font-size: 10px; }
+thead th.active .sort-ico { opacity: 1; color: var(--accent); }
+thead th.active { color: var(--accent); }
+
+tbody tr { border-bottom: 1px solid var(--border); transition: background .08s; vertical-align: middle; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FAFBFF; }
+tbody td {
+  padding: 10px 14px; color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  border-right: 1px solid var(--border);
+}
+tbody td:last-child { border-right: none; }
+tbody td.wrap { white-space: normal; word-break: break-word; line-height: 1.45; vertical-align: top; }
+
+/* column widths */
+.col-tohop   { width: 80px; }
+.col-matruong{ width: 70px; }
+.col-tentruong{ width: 190px; }
+.col-nganh   { width: auto; min-width: 0; }
+.col-dc      { width: 72px; text-align: center; }
+
+/* badges & scores */
+.badge {
+  display: inline-block; font-size: 11px; padding: 2px 8px;
+  border-radius: 5px; font-weight: 600; white-space: nowrap;
+}
+.badge-a00 { background: #DBEAFE; color: #1D4ED8; }
+.badge-c01 { background: #DCFCE7; color: #15803D; }
+.badge-d01 { background: #EDE9FE; color: #6D28D9; }
+.badge-d07 { background: #FEF3C7; color: #B45309; }
+.badge-other{ background: var(--surface2); color: var(--text2); }
+
+.score { font-weight: 600; text-align: center; font-size: 13px; }
+.score.high  { color: #15803D; }
+.score.mid   { color: #B45309; }
+.score.low   { color: #DC2626; }
+.score.empty { color: var(--text3); font-weight: 400; font-size: 12px; }
+
+/* mã trường, mã ngành cells */
+.cell-code {
+  font-size: 12px; color: var(--text2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── PAGINATION ── */
+.pagination {
+  display: flex; align-items: center; gap: 6px;
+  justify-content: center; margin-top: 1rem; flex-wrap: wrap;
+}
+.pg-btn {
+  padding: 5px 10px; font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text);
+  cursor: pointer; transition: background .1s;
+}
+.pg-btn:hover:not(:disabled) { background: var(--surface2); }
+.pg-btn:disabled { opacity: .3; cursor: not-allowed; }
+.pg-btn.active {
+  background: var(--accent); color: #fff;
+  border-color: var(--accent); font-weight: 600;
+}
+.pg-info { font-size: 12px; color: var(--text2); padding: 0 4px; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center; padding: 3.5rem 1rem;
+  color: var(--text2); font-size: 14px;
+}
+.empty-state i { font-size: 40px; display: block; margin-bottom: 1rem; opacity: .3; }
+.empty-state p { color: var(--text2); }
+.empty-state small { color: var(--text3); font-size: 12px; }
+
+
+/* ── TỔ HỢP LEGEND ── */
+.tohop-legend {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 7px;
+}
+.tohop-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px 4px 6px;
+  border-radius: 6px; font-size: 12px; border: 1px solid transparent;
+  cursor: default; transition: opacity .15s;
+}
+.tohop-pill .pill-code {
+  font-weight: 700; font-size: 11px;
+  padding: 1px 5px; border-radius: 4px;
+}
+.tohop-pill .pill-subjects { color: var(--text2); }
+.tp-a00 { background:#EFF6FF; border-color:#BFDBFE; }
+.tp-a00 .pill-code { background:#DBEAFE; color:#1D4ED8; }
+.tp-c01 { background:#F0FDF4; border-color:#BBF7D0; }
+.tp-c01 .pill-code { background:#DCFCE7; color:#15803D; }
+.tp-d01 { background:#F5F3FF; border-color:#DDD6FE; }
+.tp-d01 .pill-code { background:#EDE9FE; color:#6D28D9; }
+.tp-d07 { background:#FFFBEB; border-color:#FDE68A; }
+.tp-d07 .pill-code { background:#FEF3C7; color:#B45309; }
+.tp-other{ background:var(--surface2); border-color:var(--border); }
+.tp-other .pill-code { background:var(--border); color:var(--text2); }
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .filters-body { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 <div class="app">
+
+  <!-- HEADER -->
   <div class="header">
-    <h1><i class="ti ti-school"></i>Điểm chuẩn đại học 2023–2025</h1>
-    <p>Tổ hợp xét tuyển: A00 (Toán–Lý–Hóa) · C01 (Toán–Văn–Lý) · D01 (Toán–Văn–Anh) · D07 (Toán–Hóa–Anh)</p>
+    <div class="header-title">
+      <div class="header-icon"><i class="ti ti-school"></i></div>
+      <div>
+        <h1>Điểm chuẩn Đại học 2023–2025</h1>
+        <p>Tra cứu &amp; lọc điểm chuẩn theo tổ hợp môn thi THPT</p>
+      </div>
+    </div>
   </div>
 
-  <div id="loadingState"><i class="ti ti-loader-2"></i>Đang tải dữ liệu...</div>
-  <div id="errorState"><i class="ti ti-alert-circle"></i><b>Không tải được dữ liệu</b><br><span id="errorMsg"></span></div>
+  <!-- LOADING / ERROR STATE -->
+  <div id="loadingState" style="text-align:center;padding:4rem 1rem;color:var(--text2)">
+    <i class="ti ti-loader-2" style="font-size:40px;display:block;margin-bottom:.75rem;color:var(--accent);animation:spin 1s linear infinite"></i>
+    Đang tải dữ liệu...
+  </div>
+  <div id="errorState" style="display:none;text-align:center;padding:3rem;background:var(--surface);border:1px solid #FECACA;border-radius:var(--radius);color:#991B1B">
+    <i class="ti ti-alert-circle" style="font-size:40px;display:block;margin-bottom:.75rem"></i>
+    <b>Không tải được dữ liệu</b><br>
+    <span id="errorMsg" style="font-size:13px;color:#B91C1C"></span>
+  </div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
+  <!-- MAIN UI -->
   <div id="mainUI" style="display:none">
     <div class="stats-row" id="statsRow"></div>
 
-    <div class="filters">
-      <div class="filter-group">
-        <label>Tổ hợp môn</label>
-        <select id="fltTohop">
-          <option value="">Tất cả tổ hợp</option>
-          <option value="A00">A00 – Toán, Lý, Hóa</option>
-          <option value="C01">C01 – Toán, Văn, Lý</option>
-          <option value="D01">D01 – Toán, Văn, Anh</option>
-          <option value="D07">D07 – Toán, Hóa, Anh</option>
-        </select>
+    <!-- FILTERS -->
+    <div class="filters-panel">
+      <div class="filters-header">
+        <i class="ti ti-adjustments-horizontal"></i>
+        <span>Bộ lọc</span>
+        <div class="filter-count" id="filterCount"></div>
       </div>
-      <div class="filter-group">
-        <label>Trường</label>
-        <select id="fltTruong"></select>
-      </div>
-      <div class="filter-group">
-        <label>Phương thức</label>
-        <select id="fltPT"></select>
-      </div>
-      <div class="filter-group">
-        <label>Điểm chuẩn 2025 từ</label>
-        <input type="number" id="fltMinDC" placeholder="VD: 24" min="0" max="30" step="0.25">
-      </div>
-      <div class="filter-group">
-        <label>Tên ngành</label>
-        <input type="text" id="fltNganh" placeholder="Nhập từ khóa...">
+      <div class="filters-body">
+
+        <!-- Tổ hợp multi-select -->
+        <div class="filter-group">
+          <label>Tổ hợp môn</label>
+          <div class="ms-wrapper" id="ms-tohop">
+            <div class="ms-trigger" id="ms-tohop-trigger" tabindex="0">
+              <span class="ms-placeholder">Tất cả tổ hợp</span>
+              <i class="ti ti-chevron-down chevron"></i>
+            </div>
+            <div class="ms-dropdown" id="ms-tohop-dropdown">
+              <div class="ms-options" id="ms-tohop-options"></div>
+              <div class="ms-footer">
+                <button class="btn-all" onclick="msSelectAll('tohop')">Chọn tất cả</button>
+                <button onclick="msClearAll('tohop')">Bỏ chọn</button>
+              </div>
+            </div>
+          </div>
+          <div class="tohop-legend" id="tohopLegend"></div>
+        </div>
+
+        <!-- Tìm trường theo từ khóa -->
+        <div class="filter-group">
+          <label>Tìm trường theo từ khóa</label>
+          <div style="position:relative">
+            <i class="ti ti-building-bank filter-input-icon" style="top:50%;transform:translateY(-50%)"></i>
+            <input type="text" class="filter-input" id="fltTruongKw"
+              placeholder="Nhập tên hoặc mã trường..." autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Trường multi-select -->
+        <div class="filter-group">
+          <label>Chọn trường cụ thể</label>
+          <div class="ms-wrapper" id="ms-truong">
+            <div class="ms-trigger" id="ms-truong-trigger" tabindex="0">
+              <span class="ms-placeholder">Tất cả trường</span>
+              <i class="ti ti-chevron-down chevron"></i>
+            </div>
+            <div class="ms-dropdown" id="ms-truong-dropdown">
+              <div class="ms-search">
+                <input type="text" placeholder="Tìm trong danh sách..." id="ms-truong-search">
+              </div>
+              <div class="ms-options" id="ms-truong-options"></div>
+              <div class="ms-footer" style="flex-wrap:wrap;gap:5px">
+                <button id="ms-truong-view-sel" class="btn-view-sel" onclick="msToggleViewSelected('truong')" style="display:none;flex:none">Đang chọn (0)</button>
+                <button class="btn-all" onclick="msSelectAll('truong')">Chọn tất cả</button>
+                <button onclick="msClearAll('truong')">Bỏ chọn</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Điểm tối thiểu -->
+        <div class="filter-group">
+          <label>Điểm chuẩn 2025 (từ)</label>
+          <div style="position:relative">
+            <i class="ti ti-trending-up filter-input-icon" style="top:50%;transform:translateY(-50%)"></i>
+            <input type="number" class="filter-input" id="fltMinDC"
+              placeholder="VD: 24" min="0" max="30" step="0.25">
+          </div>
+        </div>
+
+        <!-- Tìm ngành -->
+        <div class="filter-group">
+          <label>Tìm tên ngành</label>
+          <div style="position:relative">
+            <i class="ti ti-search filter-input-icon" style="top:50%;transform:translateY(-50%)"></i>
+            <input type="text" class="filter-input" id="fltNganh" placeholder="Nhập từ khóa ngành...">
+          </div>
+        </div>
+
       </div>
     </div>
 
+    <!-- TOOLBAR -->
     <div class="toolbar">
-      <div class="toolbar-left"><span id="resultCount"></span></div>
-      <button class="btn" id="btnReset"><i class="ti ti-refresh"></i>Đặt lại</button>
-      <button class="btn" id="btnExport"><i class="ti ti-download"></i>Xuất CSV</button>
+      <div class="toolbar-left">
+        <span class="result-count" id="resultCount"></span>
+      </div>
+      <button class="btn" id="btnReset">
+        <i class="ti ti-refresh"></i>Đặt lại bộ lọc
+      </button>
+      <button class="btn btn-primary" id="btnExport">
+        <i class="ti ti-download"></i>Xuất CSV
+      </button>
     </div>
 
+    <!-- TABLE -->
     <div class="table-wrap">
       <table>
-        <thead><tr>
-          <th style="width:76px" data-col="ma_to_hop">Tổ hợp <span class="si">↕</span></th>
-          <th style="width:68px" data-col="ma_truong">Mã trường <span class="si">↕</span></th>
-          <th style="width:190px" data-col="ten_truong">Tên trường <span class="si">↕</span></th>
-          <th style="width:115px" data-col="phuong_thuc">Phương thức <span class="si">↕</span></th>
-          <th data-col="ten_nganh">Tên ngành <span class="si">↕</span></th>
-          <th style="width:72px;text-align:center" data-col="diem_chuan_2025">2025 <span class="si">↕</span></th>
-          <th style="width:72px;text-align:center" data-col="diem_chuan_2024">2024 <span class="si">↕</span></th>
-          <th style="width:72px;text-align:center" data-col="diem_chuan_2023">2023 <span class="si">↕</span></th>
-        </tr></thead>
+        <thead>
+          <tr>
+            <th class="col-tohop"  data-col="ma_to_hop">Tổ hợp <span class="sort-ico">↕</span></th>
+            <th class="col-matruong" data-col="ma_truong">Mã trường <span class="sort-ico">↕</span></th>
+            <th class="col-tentruong" data-col="ten_truong">Tên trường <span class="sort-ico">↕</span></th>
+            <th class="col-nganh" data-col="ten_nganh">Tên ngành <span class="sort-ico">↕</span></th>
+            <th class="col-dc" data-col="diem_chuan_2025">2025 <span class="sort-ico">↕</span></th>
+            <th class="col-dc" data-col="diem_chuan_2024">2024 <span class="sort-ico">↕</span></th>
+            <th class="col-dc" data-col="diem_chuan_2023">2023 <span class="sort-ico">↕</span></th>
+          </tr>
+        </thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
@@ -171,32 +558,43 @@ tbody td:last-child{border-right:none}
 </div>
 
 <script>
-const PAGE = 50;
-let all=[], fil=[], sortCol='', sortAsc=true, page=1;
-const $=id=>document.getElementById(id);
+const PAGE_SIZE = 50;
+let allData = [], filtered = [], sortCol = '', sortAsc = true, currentPage = 1;
+const $ = id => document.getElementById(id);
 
-// ── Load CSV từ cùng thư mục ──
-async function loadCSV() {
-  try {
-    const resp = await fetch('data.csv');
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    let text = await resp.text();
-    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // strip BOM
-    all = parseCSV(text);
-    $('loadingState').style.display = 'none';
-    $('mainUI').style.display = '';
-    populate();
-    filter();
-  } catch(e) {
-    $('loadingState').style.display = 'none';
-    $('errorState').style.display = '';
-    $('errorMsg').textContent = e.message;
-  }
-}
+// Multi-select state
+const msState = {
+  tohop:  { selected: new Set(), allOptions: [], filtered: [], viewSelected: false },
+  truong: { selected: new Set(), allOptions: [], filtered: [], viewSelected: false }
+};
 
+/* ─── CSV PARSING ─── */
 function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  const headers = splitLine(lines[0]);
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g,'').trim());
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const parts = splitCSVLine(lines[i]);
+    if (parts.length < 3) continue;
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h] = (parts[idx]||'').replace(/^"|"$/g,'').trim(); });
+    rows.push(obj);
+  }
+  return rows;
+}
+function splitCSVLine(line) {
+  const result=[]; let cur='', inQ=false;
+  for (let i=0; i<line.length; i++) {
+    const c=line[i];
+    if (c==='"') { inQ=!inQ; continue; }
+    if (c===','&&!inQ) { result.push(cur); cur=''; continue; }
+    cur+=c;
+  }
+  result.push(cur); return result;
+}
+function normalizeHeaders(rows) {
+  if (!rows.length) return rows;
   const map = {
     'Mã tổ hợp':'ma_to_hop','Tổ hợp môn':'to_hop_mon',
     'Mã trường':'ma_truong','Tên trường':'ten_truong',
@@ -204,148 +602,452 @@ function parseCSV(text) {
     'Tổ hợp xét tuyển':'to_hop_xet',
     'Điểm chuẩn 2025':'diem_chuan_2025',
     'Điểm chuẩn 2024':'diem_chuan_2024',
-    'Điểm chuẩn 2023':'diem_chuan_2023',
+    'Điểm chuẩn 2023':'diem_chuan_2023'
   };
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const parts = splitLine(lines[i]);
-    if (parts.length < 3) continue;
-    const obj = {};
-    headers.forEach((h,idx) => { obj[map[h]||h] = (parts[idx]||'').trim(); });
-    rows.push(obj);
+  return rows.map(r => {
+    const n={};
+    Object.keys(r).forEach(k => { n[map[k]||k] = r[k]; });
+    return n;
+  });
+}
+/* ─── LOAD CSV TỰ ĐỘNG TỪ CÙNG THƯ MỤC ─── */
+async function loadCSV() {
+  try {
+    const resp = await fetch('diem_chuan_to_hop.csv');
+    if (!resp.ok) throw new Error(`Lỗi HTTP ${resp.status} – kiểm tra file diem_chuan_to_hop.csv có trong cùng thư mục không.`);
+    let text = await resp.text();
+    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // strip BOM
+    allData = normalizeHeaders(parseCSV(text));
+    $('loadingState').style.display = 'none';
+    initUI();
+  } catch(e) {
+    $('loadingState').style.display = 'none';
+    $('errorState').style.display = '';
+    $('errorMsg').textContent = e.message;
   }
-  return rows;
 }
 
-function splitLine(line) {
-  const r=[]; let cur='', q=false;
-  for (let i=0;i<line.length;i++) {
-    const c=line[i];
-    if(c==='"'){q=!q;}
-    else if(c===','&&!q){r.push(cur.replace(/^"|"$/g,''));cur='';}
-    else cur+=c;
+loadCSV();
+
+/* ─── INIT ─── */
+// Static tohop definitions (covers common combos + dynamically discovered ones)
+const TOHOP_DEF = {
+  'A00': 'Toán · Lý · Hóa',
+  'A01': 'Toán · Lý · Anh',
+  'B00': 'Toán · Hóa · Sinh',
+  'B03': 'Toán · Sinh · Văn',
+  'B08': 'Toán · Sinh · Anh',
+  'C00': 'Văn · Sử · Địa',
+  'C01': 'Toán · Văn · Lý',
+  'C02': 'Văn · Toán · Hóa',
+  'C03': 'Văn · Toán · Sử',
+  'C04': 'Văn · Toán · Địa',
+  'D01': 'Toán · Văn · Anh',
+  'D07': 'Toán · Hóa · Anh',
+  'D08': 'Toán · Sinh · Anh',
+  'D09': 'Toán · Sử · Anh',
+  'D10': 'Toán · Địa · Anh',
+  'D14': 'Văn · Sử · Anh',
+  'D15': 'Văn · Địa · Anh',
+  'D66': 'Toán · Văn · GDCD',
+  'D84': 'Toán · Sử · Địa',
+  'D96': 'Toán · Lý · GDCD',
+};
+
+function getPillClass(ma) {
+  const m = (ma||'').toUpperCase();
+  if (m==='A00') return 'tp-a00';
+  if (m==='C01') return 'tp-c01';
+  if (m==='D01') return 'tp-d01';
+  if (m==='D07') return 'tp-d07';
+  return 'tp-other';
+}
+
+function renderTohopLegend() {
+  const opts = msState.tohop.allOptions;
+  const legend = $('tohopLegend');
+  if (!legend || !opts.length) return;
+  legend.innerHTML = opts.map(o => {
+    const subjects = TOHOP_DEF[o.value] || o.value;
+    return `<span class="tohop-pill ${getPillClass(o.value)}">
+      <span class="pill-code">${escHtml(o.value)}</span>
+      <span class="pill-subjects">${escHtml(subjects)}</span>
+    </span>`;
+  }).join('');
+}
+
+function initUI() {
+  $('mainUI').style.display = '';
+  populateMultiSelects();
+  renderTohopLegend();
+  applyFilters();
+}
+
+/* ─── MULTI-SELECT HELPERS ─── */
+function populateMultiSelects() {
+  // Tổ hợp
+  const tohops = [...new Set(allData.map(r=>r.ma_to_hop).filter(Boolean))].sort();
+  msState.tohop.allOptions = tohops.map(v => ({
+    value: v,
+    label: v === 'A00' ? 'A00 – Toán, Lý, Hóa'
+         : v === 'C01' ? 'C01 – Toán, Văn, Lý'
+         : v === 'D01' ? 'D01 – Toán, Văn, Anh'
+         : v === 'D07' ? 'D07 – Toán, Hóa, Anh'
+         : v
+  }));
+  renderMsOptions('tohop', '');
+
+  // Trường
+  const truongs = [...new Set(allData.map(r => r.ten_truong||r.ma_truong).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));
+  msState.truong.allOptions = truongs.map(v=>({value:v,label:v}));
+  renderMsOptions('truong', '');
+}
+
+function renderMsOptions(key, searchKw) {
+  const state = msState[key];
+  const kw = searchKw.toLowerCase().trim();
+  state.filtered = kw
+    ? state.allOptions.filter(o => o.label.toLowerCase().includes(kw))
+    : [...state.allOptions];
+
+  const container = $(`ms-${key}-options`);
+  container.innerHTML = state.filtered.map(o => `
+    <label class="ms-option ${state.selected.has(o.value)?'selected':''}" data-val="${escHtml(o.value)}">
+      <input type="checkbox" ${state.selected.has(o.value)?'checked':''} onchange="msToggle('${key}','${escHtml(o.value)}',this.checked)">
+      <span class="ms-option-label" title="${escHtml(o.label)}">${escHtml(o.label)}</span>
+    </label>
+  `).join('');
+  updateViewSelectedBtn(key);
+}
+
+function renderMsOptionsSelected(key) {
+  const state = msState[key];
+  const selectedOpts = state.allOptions.filter(o => state.selected.has(o.value));
+  const container = $(`ms-${key}-options`);
+  if (selectedOpts.length === 0) {
+    container.innerHTML = `<div style="padding:12px 10px;font-size:13px;color:var(--text3);text-align:center">Chưa chọn trường nào</div>`;
+    return;
   }
-  r.push(cur.replace(/^"|"$/g,''));
-  return r;
+  container.innerHTML = selectedOpts.map(o => `
+    <label class="ms-option selected" data-val="${escHtml(o.value)}">
+      <input type="checkbox" checked onchange="msToggle('${key}','${escHtml(o.value)}',this.checked)">
+      <span class="ms-option-label" title="${escHtml(o.label)}">${escHtml(o.label)}</span>
+    </label>
+  `).join('');
 }
 
-function populate() {
-  const trs=[...new Set(all.map(r=>r.ten_truong).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));
-  const pts=[...new Set(all.map(r=>r.phuong_thuc).filter(Boolean))].sort();
-  const ts=$('fltTruong'); ts.innerHTML='<option value="">Tất cả trường</option>';
-  trs.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;ts.appendChild(o);});
-  const ps=$('fltPT'); ps.innerHTML='<option value="">Tất cả phương thức</option>';
-  pts.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;ps.appendChild(o);});
+function msToggle(key, value, checked) {
+  if (checked) msState[key].selected.add(value);
+  else msState[key].selected.delete(value);
+  // Re-render options to sync checkboxes when removing via tag × button
+  if (msState[key].viewSelected) {
+    renderMsOptionsSelected(key);
+  } else {
+    renderMsOptions(key, $(`ms-${key}-search`)?.value || '');
+  }
+  updateMsTrigger(key);
+  applyFilters();
 }
 
-function filter() {
-  const th=$('fltTohop').value, tr=$('fltTruong').value,
-        pt=$('fltPT').value, kw=$('fltNganh').value.toLowerCase().trim(),
-        mn=parseFloat($('fltMinDC').value)||0;
-  fil = all.filter(r=>{
-    if(th && r.ma_to_hop!==th) return false;
-    if(tr && r.ten_truong!==tr) return false;
-    if(pt && r.phuong_thuc!==pt) return false;
-    if(mn>0){const v=parseFloat(r.diem_chuan_2025);if(isNaN(v)||v<mn)return false;}
-    if(kw && !(r.ten_nganh||'').toLowerCase().includes(kw)) return false;
+function msSelectAll(key) {
+  msState[key].filtered.forEach(o => msState[key].selected.add(o.value));
+  msState[key].viewSelected = false;
+  renderMsOptions(key, $(`ms-${key}-search`)?.value||'');
+  updateMsTrigger(key);
+  updateViewSelectedBtn(key);
+  applyFilters();
+}
+
+function msClearAll(key) {
+  msState[key].selected.clear();
+  msState[key].viewSelected = false;
+  renderMsOptions(key, $(`ms-${key}-search`)?.value||'');
+  updateMsTrigger(key);
+  updateViewSelectedBtn(key);
+  applyFilters();
+}
+
+function msToggleViewSelected(key) {
+  msState[key].viewSelected = !msState[key].viewSelected;
+  if (msState[key].viewSelected) {
+    renderMsOptionsSelected(key);
+  } else {
+    renderMsOptions(key, $(`ms-${key}-search`)?.value || '');
+  }
+  updateViewSelectedBtn(key);
+}
+
+function updateViewSelectedBtn(key) {
+  const btn = $(`ms-${key}-view-sel`);
+  if (!btn) return;
+  const count = msState[key].selected.size;
+  const active = msState[key].viewSelected;
+  btn.textContent = active ? '← Tất cả' : `Đang chọn (${count})`;
+  btn.style.background = active ? 'var(--surface2)' : 'var(--accent-bg)';
+  btn.style.color = active ? 'var(--text2)' : 'var(--accent)';
+  btn.style.display = count > 0 ? '' : 'none';
+}
+
+function updateMsTrigger(key) {
+  const trigger = $(`ms-${key}-trigger`);
+  const sel = msState[key].selected;
+  const allOpts = msState[key].allOptions;
+  const placeholder = key==='tohop' ? 'Tất cả tổ hợp' : 'Tất cả trường';
+  const chevron = `<i class="ti ti-chevron-down chevron"></i>`;
+
+  if (sel.size === 0) {
+    trigger.innerHTML = `<span class="ms-placeholder">${placeholder}</span>${chevron}`;
+    return;
+  }
+
+  const selArr = [...sel];
+  // For tohop (short labels like A00): show up to 3 tags
+  // For truong (long names): show count badge always
+  const MAX_TAGS = key === 'tohop' ? 3 : 1;
+
+  if (selArr.length <= MAX_TAGS) {
+    const tags = selArr.map(v =>
+      `<span class="ms-tag" title="${escHtml(v)}">${escHtml(v)}<span class="rm" onclick="msToggle('${key}','${escHtml(v)}',false);event.stopPropagation()">×</span></span>`
+    ).join('');
+    trigger.innerHTML = tags + chevron;
+  } else {
+    // Show first tag + count
+    const first = selArr[0];
+    const firstTag = `<span class="ms-tag" title="${escHtml(first)}">${escHtml(first)}<span class="rm" onclick="msToggle('${key}','${escHtml(first)}',false);event.stopPropagation()">×</span></span>`;
+    const rest = selArr.length - 1;
+    trigger.innerHTML = firstTag + `<span class="ms-count-badge">+${rest}</span>` + chevron;
+  }
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Dropdown open/close
+function setupDropdown(key) {
+  const trigger = $(`ms-${key}-trigger`);
+  const dropdown = $(`ms-${key}-dropdown`);
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = dropdown.classList.contains('open');
+    // close all
+    document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open'));
+    document.querySelectorAll('.ms-trigger.open').forEach(t=>t.classList.remove('open'));
+    if (!isOpen) {
+      dropdown.classList.add('open');
+      trigger.classList.add('open');
+    }
+  });
+  trigger.addEventListener('keydown', e => {
+    if (e.key==='Enter'||e.key===' ') { e.preventDefault(); trigger.click(); }
+  });
+  const searchEl = $(`ms-${key}-search`);
+  if (searchEl) {
+    searchEl.addEventListener('input', () => renderMsOptions(key, searchEl.value));
+  }
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.ms-dropdown.open').forEach(d=>d.classList.remove('open'));
+  document.querySelectorAll('.ms-trigger.open').forEach(t=>t.classList.remove('open'));
+});
+document.querySelectorAll('.ms-dropdown').forEach(d=>d.addEventListener('click',e=>e.stopPropagation()));
+
+/* ─── FILTER LOGIC ─── */
+function applyFilters() {
+  const tohopSel  = msState.tohop.selected;
+  const truongSel = msState.truong.selected;
+  const truongKw  = ($('fltTruongKw')||{value:''}).value.toLowerCase().trim();
+  const minDC     = parseFloat($('fltMinDC').value) || 0;
+  const kw        = $('fltNganh').value.toLowerCase().trim();
+
+  filtered = allData.filter(r => {
+    if (tohopSel.size > 0 && !tohopSel.has(r.ma_to_hop)) return false;
+    if (truongKw) {
+      const name = (r.ten_truong||'').toLowerCase();
+      const code = (r.ma_truong||'').toLowerCase();
+      if (!name.includes(truongKw) && !code.includes(truongKw)) return false;
+    }
+    if (truongSel.size > 0 && !truongSel.has(r.ten_truong||r.ma_truong)) return false;
+    if (minDC > 0) {
+      const dc = parseFloat(r.diem_chuan_2025);
+      if (isNaN(dc) || dc < minDC) return false;
+    }
+    if (kw && !(r.ten_nganh||'').toLowerCase().includes(kw)) return false;
     return true;
   });
-  if(sortCol) {
-    fil.sort((a,b)=>{
-      const av=a[sortCol]||'', bv=b[sortCol]||'';
+
+  if (sortCol) {
+    filtered.sort((a,b) => {
+      let av=a[sortCol]||'', bv=b[sortCol]||'';
       const an=parseFloat(av), bn=parseFloat(bv);
-      if(!isNaN(an)&&!isNaN(bn)) return sortAsc?an-bn:bn-an;
+      if (!isNaN(an)&&!isNaN(bn)) return sortAsc?an-bn:bn-an;
       return sortAsc?av.localeCompare(bv,'vi'):bv.localeCompare(av,'vi');
     });
   }
-  page=1; stats(); renderTable(); renderPag();
+
+  updateFilterCount();
+  currentPage = 1;
+  renderStats(); renderTable(); renderPagination();
 }
 
-function stats() {
-  const sc=fil.filter(r=>r.diem_chuan_2025).length;
-  const trs=new Set(fil.map(r=>r.ma_truong)).size;
-  const nums=fil.map(r=>parseFloat(r.diem_chuan_2025)).filter(n=>!isNaN(n));
-  const avg=nums.length?(nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(2):'—';
-  $('statsRow').innerHTML=`
-    <div class="stat"><div class="stat-val">${fil.length.toLocaleString()}</div><div class="stat-lbl">Ngành</div></div>
-    <div class="stat"><div class="stat-val">${trs}</div><div class="stat-lbl">Trường</div></div>
-    <div class="stat"><div class="stat-val">${sc.toLocaleString()}</div><div class="stat-lbl">Có điểm 2025</div></div>
-    <div class="stat"><div class="stat-val">${avg}</div><div class="stat-lbl">Điểm TB 2025</div></div>`;
-  $('resultCount').textContent=`${fil.length.toLocaleString()} kết quả`;
+function updateFilterCount() {
+  let n = 0;
+  if (msState.tohop.selected.size > 0) n++;
+  if (msState.truong.selected.size > 0) n++;
+  if (($('fltTruongKw')||{value:''}).value.trim()) n++;
+  if ($('fltMinDC').value) n++;
+  if ($('fltNganh').value.trim()) n++;
+  const el = $('filterCount');
+  if (n > 0) { el.textContent = n; el.style.display = ''; }
+  else el.style.display = 'none';
 }
 
-function sc(v){const n=parseFloat(v);if(isNaN(n)||v==='')return'na';if(n>=26)return'high';if(n>=22)return'mid';return'low';}
-function badge(m){const c={'A00':'b-a00','C01':'b-c01','D01':'b-d01','D07':'b-d07'};return c[m]||'b-x';}
+/* ─── RENDER ─── */
+function renderStats() {
+  const total = filtered.length;
+  const withScore = filtered.filter(r=>r.diem_chuan_2025).length;
+  const truongs = new Set(filtered.map(r=>r.ma_truong)).size;
+  const scores = filtered.map(r=>parseFloat(r.diem_chuan_2025)).filter(n=>!isNaN(n));
+  const avg = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(2) : '—';
+  $('statsRow').innerHTML = `
+    <div class="stat">
+      <div class="stat-icon"><i class="ti ti-list-details"></i></div>
+      <div class="stat-val">${total.toLocaleString()}</div>
+      <div class="stat-lbl">Ngành hiển thị</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><i class="ti ti-building-bank"></i></div>
+      <div class="stat-val">${truongs}</div>
+      <div class="stat-lbl">Trường</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><i class="ti ti-circle-check"></i></div>
+      <div class="stat-val">${withScore.toLocaleString()}</div>
+      <div class="stat-lbl">Có điểm 2025</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon"><i class="ti ti-chart-bar"></i></div>
+      <div class="stat-val">${avg}</div>
+      <div class="stat-lbl">Điểm TB 2025</div>
+    </div>`;
+  $('resultCount').innerHTML = `<strong>${total.toLocaleString()}</strong> kết quả`;
+}
+
+function scoreClass(val) {
+  const n = parseFloat(val);
+  if (isNaN(n)||val==='') return 'empty';
+  if (n >= 26) return 'high';
+  if (n >= 22) return 'mid';
+  return 'low';
+}
+function badgeClass(ma) {
+  const m = (ma||'').toUpperCase();
+  if (m==='A00') return 'badge-a00';
+  if (m==='C01') return 'badge-c01';
+  if (m==='D01') return 'badge-d01';
+  if (m==='D07') return 'badge-d07';
+  return 'badge-other';
+}
 
 function renderTable() {
-  const s=(page-1)*PAGE, rows=fil.slice(s,s+PAGE), tb=$('tableBody');
-  if(!rows.length){tb.innerHTML=`<tr><td colspan="8"><div class="empty"><i class="ti ti-mood-empty"></i>Không có kết quả phù hợp</div></td></tr>`;return;}
-  tb.innerHTML=rows.map(r=>{
-    const d5=r.diem_chuan_2025||'', d4=r.diem_chuan_2024||'', d3=r.diem_chuan_2023||'';
-    return`<tr>
-      <td><span class="badge ${badge(r.ma_to_hop)}">${r.ma_to_hop||''}</span></td>
-      <td style="color:#6b7280;font-size:12px">${r.ma_truong||''}</td>
-      <td title="${r.ten_truong||''}">${r.ten_truong||''}</td>
-      <td style="color:#6b7280;font-size:12px" title="${r.phuong_thuc||''}">${r.phuong_thuc||''}</td>
-      <td title="${r.ten_nganh||''}">${r.ten_nganh||''}</td>
-      <td class="score ${sc(d5)}">${d5||'–'}</td>
-      <td class="score ${sc(d4)}">${d4||'–'}</td>
-      <td class="score ${sc(d3)}">${d3||'–'}</td>
+  const start = (currentPage-1)*PAGE_SIZE;
+  const page  = filtered.slice(start, start+PAGE_SIZE);
+  const tbody = $('tableBody');
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
+      <i class="ti ti-mood-empty"></i>
+      <p>Không có kết quả phù hợp</p>
+      <small>Thử điều chỉnh hoặc bỏ bớt bộ lọc</small>
+    </div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = page.map(r => {
+    const dc25=r.diem_chuan_2025||'', dc24=r.diem_chuan_2024||'', dc23=r.diem_chuan_2023||'';
+    return `<tr>
+      <td><span class="badge ${badgeClass(r.ma_to_hop)}">${r.ma_to_hop||''}</span></td>
+      <td class="cell-code">${r.ma_truong||''}</td>
+      <td title="${escHtml(r.ten_truong||'')}">${escHtml(r.ten_truong||'')}</td>
+      <td class="wrap" title="${escHtml(r.ten_nganh||'')}"><span>${escHtml(r.ten_nganh||'')}</span></td>
+      <td class="score ${scoreClass(dc25)}">${dc25||'–'}</td>
+      <td class="score ${scoreClass(dc24)}">${dc24||'–'}</td>
+      <td class="score ${scoreClass(dc23)}">${dc23||'–'}</td>
     </tr>`;
   }).join('');
 }
 
-function renderPag() {
-  const tot=Math.ceil(fil.length/PAGE), pg=$('pagination');
-  if(tot<=1){pg.innerHTML='';return;}
-  let h=`<button class="pg-btn" ${page===1?'disabled':''} onclick="go(${page-1})"><i class="ti ti-chevron-left"></i></button>`;
-  const rng=[];
-  for(let i=1;i<=tot;i++){if(i===1||i===tot||Math.abs(i-page)<=2)rng.push(i);else if(rng[rng.length-1]!=='…')rng.push('…');}
-  rng.forEach(p=>{
-    if(p==='…')h+=`<span class="pg-info">…</span>`;
-    else h+=`<button class="pg-btn ${p===page?'active':''}" onclick="go(${p})">${p}</button>`;
+function renderPagination() {
+  const total = Math.ceil(filtered.length/PAGE_SIZE);
+  const pg = $('pagination');
+  if (total<=1) { pg.innerHTML=''; return; }
+  let html = `<button class="pg-btn" ${currentPage===1?'disabled':''} onclick="goPage(${currentPage-1})"><i class="ti ti-chevron-left"></i></button>`;
+  const range=[];
+  for (let i=1;i<=total;i++) {
+    if (i===1||i===total||Math.abs(i-currentPage)<=2) range.push(i);
+    else if (range[range.length-1]!=='…') range.push('…');
+  }
+  range.forEach(p => {
+    if (p==='…') html+=`<span class="pg-info">…</span>`;
+    else html+=`<button class="pg-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
   });
-  h+=`<button class="pg-btn" ${page===tot?'disabled':''} onclick="go(${page+1})"><i class="ti ti-chevron-right"></i></button>`;
-  h+=`<span class="pg-info">Trang ${page}/${tot}</span>`;
-  pg.innerHTML=h;
+  html+=`<button class="pg-btn" ${currentPage===total?'disabled':''} onclick="goPage(${currentPage+1})"><i class="ti ti-chevron-right"></i></button>`;
+  html+=`<span class="pg-info">Trang ${currentPage}/${total}</span>`;
+  pg.innerHTML=html;
 }
 
-function go(p){page=p;renderTable();renderPag();document.querySelector('.table-wrap').scrollTop=0;}
-
-function exportCSV(){
-  const keys=['ma_to_hop','to_hop_mon','ma_truong','ten_truong','phuong_thuc','ten_nganh','to_hop_xet','diem_chuan_2025','diem_chuan_2024','diem_chuan_2023'];
-  const hdr=['Mã tổ hợp','Tổ hợp môn','Mã trường','Tên trường','Phương thức','Tên ngành','Tổ hợp xét tuyển','Điểm chuẩn 2025','Điểm chuẩn 2024','Điểm chuẩn 2023'];
-  let csv='\uFEFF'+hdr.join(',')+'\n';
-  fil.forEach(r=>{csv+=keys.map(k=>`"${(r[k]||'').replace(/"/g,'""')}"`).join(',')+'\n';});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  a.download='diem_chuan_loc.csv';a.click();
+function goPage(p) {
+  currentPage=p; renderTable(); renderPagination();
+  $('tableBody').closest('.table-wrap').scrollTop=0;
 }
 
-// Events
-document.querySelectorAll('thead th[data-col]').forEach(th=>{
-  th.addEventListener('click',()=>{
-    const col=th.dataset.col;
-    sortAsc = sortCol===col ? !sortAsc : true;
-    sortCol=col;
-    document.querySelectorAll('thead th').forEach(t=>{t.classList.remove('active');t.querySelector('.si').textContent='↕';});
+/* ─── EXPORT ─── */
+function exportCSV() {
+  const keys   = ['ma_to_hop','to_hop_mon','ma_truong','ten_truong','ten_nganh','to_hop_xet','diem_chuan_2025','diem_chuan_2024','diem_chuan_2023'];
+  const header = ['Mã tổ hợp','Tổ hợp môn','Mã trường','Tên trường','Tên ngành','Tổ hợp xét tuyển','Điểm chuẩn 2025','Điểm chuẩn 2024','Điểm chuẩn 2023'];
+  let csv = '\uFEFF' + header.join(',') + '\n';
+  filtered.forEach(r => { csv += keys.map(k=>`"${(r[k]||'').replace(/"/g,'""')}"`).join(',') + '\n'; });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download = 'diem_chuan_loc.csv'; a.click();
+}
+
+/* ─── SORT ─── */
+document.querySelectorAll('thead th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol===col) sortAsc=!sortAsc; else { sortCol=col; sortAsc=true; }
+    document.querySelectorAll('thead th').forEach(t=>{ t.classList.remove('active'); t.querySelector('.sort-ico').textContent='↕'; });
     th.classList.add('active');
-    th.querySelector('.si').textContent=sortAsc?'↑':'↓';
-    filter();
+    th.querySelector('.sort-ico').textContent = sortAsc?'↑':'↓';
+    applyFilters();
   });
 });
-['fltTohop','fltTruong','fltPT'].forEach(id=>$(id).addEventListener('change',filter));
-['fltMinDC','fltNganh'].forEach(id=>$(id).addEventListener('input',filter));
-$('btnReset').addEventListener('click',()=>{
-  ['fltTohop','fltTruong','fltPT'].forEach(id=>$(id).value='');
-  ['fltMinDC','fltNganh'].forEach(id=>$(id).value='');
-  sortCol='';sortAsc=true;
-  document.querySelectorAll('thead th').forEach(t=>{t.classList.remove('active');t.querySelector('.si').textContent='↕';});
-  filter();
-});
-$('btnExport').addEventListener('click',exportCSV);
 
-loadCSV();
+/* ─── EVENT BINDINGS ─── */
+['fltMinDC','fltNganh','fltTruongKw'].forEach(id => {
+  const el = $(id);
+  if (el) el.addEventListener('input', applyFilters);
+});
+
+$('btnReset').addEventListener('click', () => {
+  msClearAll('tohop');
+  msClearAll('truong');
+  $('fltTruongKw').value = '';
+  $('fltMinDC').value = '';
+  $('fltNganh').value = '';
+  sortCol=''; sortAsc=true;
+  document.querySelectorAll('thead th').forEach(t=>{
+    t.classList.remove('active');
+    t.querySelector('.sort-ico').textContent='↕';
+  });
+  applyFilters();
+});
+
+$('btnExport').addEventListener('click', exportCSV);
+
+/* ─── SETUP DROPDOWNS (after DOM ready) ─── */
+setupDropdown('tohop');
+setupDropdown('truong');
 </script>
 </body>
 </html>
